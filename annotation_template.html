@@ -1,0 +1,285 @@
+<!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+<crowd-form answer-format="flatten-objects">
+
+    <p>
+      <strong>Instructions: </strong>
+      Given a geometric image, please observe the image and fill in the relevant information as required (you can write letters, digit or compose a sentence in natural language).<br>
+      **<span style="color: red;">Simply observe the image and answer some very basic questions about its description, without the need for calculations; these are not geometry problems</span>.**
+    </p>
+    <p><img src="${image_url}" style="max-width: 100%; max-height: 250px" /></p>
+    <p>
+    <strong>Mentions:</strong><br>
+    1. If the information below is not present in the diagram, please write <span style="color: red;">none</span>. <br>
+    2. Please use symbols whenever possible; these symbols can be directly copied and pasted (e.g., △, ∠, ⁀, °,⊙, ⊥, ∥, α, β, γ, π, θ).<br>
+    3. Provide an objective description without adding subjective guesses (e.g., two lines appear to be vertical, but there is no vertical symbol in the diagram; you may label it as (vertical possible)).
+    </p>
+
+    <!-- Your image file URLs will be substituted for the "image_url" variable below
+          when you publish a batch with a CSV input file containing multiple image file URLs.
+          To preview the element with an example image, try setting the src attribute to
+          "https://s3.amazonaws.com/cv-demo-images/basketball-outdoor.jpg" -->
+
+
+    <style>
+      .center {
+        text-align: center;
+      }
+      .bold {
+        font-weight: bold;
+      }
+    </style>
+    
+    <div class="left">
+      <span class="bold" style="color: black;">I.Please fill in information about the <span style="color: red;">points</span> of the geometric diagram in the text box on the right. If there are multiple items to be filled in, separate them with a semicolon (#) (such as: A#B#C). For the large text box, line breaks are allowed.</span>
+    </div>
+    
+    <p><img src="${image_url}" style="max-width: 100%; max-height: 250px" /></p>
+    
+    <table>
+      <tr>
+        <td><label for="tag1">1.Points/How many points are on this geometric figure?</label></td>
+        <td><input type="text" id="tag1" name="Points_Number" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag2">2.Points/Which one is the center point of the circle?</label></td>
+        <td><input type="text" id="tag2" name="Points_Center" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag3">3.Points/Which points are on the circumference of the circle?</label></td>
+        <td><input type="text" id="tag3" name="Points_Circumference" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag4">4.Points/Which points are outside the circle?</label></td>
+        <td><input type="text" id="tag4" name="Points_Outside" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+    
+      <tr>
+        <td><label for="tag5">5.Points/Which points are inside the circle?</label></td>
+        <td><input type="text" id="tag5" name="Points_Inside" maxlength="250" style="width: 300px;" required></td>
+    
+      <tr>
+        <td><label for="tag6">6.Points/Position of the points (Please briefly describe the positional relationship of <span style="color: red;">each point</span> with respect to the center of the circle.):<br>
+        <!--You can click one of these candidate buttons to add the position. <br>-->
+        <span style="margin-left: 14px;">First enter a point and a colon in the text box on the right, then click one of these candidate buttons, and then enter the next point on a new line.</span><br>
+        <span style="margin-left: 14px;">e.g. A:directly above the center</span><br>
+        <span style="margin-left:44px;">B:lower left half of the circle</span><br>
+        <span style="margin-left: 14px;">Candidate</span>:
+        <span style="margin-left: 8px; color: red;"><button onclick="addTextToTextarea('directly above the center')">directly above the center</button></span><br>
+        <span style="margin-left: 104px; color: red;"><button onclick="addTextToTextarea('directly below the center')">directly below the center</button></span><br>
+        <span style="margin-left: 104px; color: red;"><button onclick="addTextToTextarea('directly to the left of the center')">directly to the left of the center</button></span><br>
+        <span style="margin-left: 104px; color: red;"><button onclick="addTextToTextarea('directly to the right of the center')">directly to the right of the center</button></span><br>
+        <span style="margin-left: 104px; color: red;"><button onclick="addTextToTextarea('upper left half of the circle')">upper left half of the circle</button></span><br>
+        <span style="margin-left: 104px; color: red;"><button onclick="addTextToTextarea('upper right half of the circle')">upper right half of the circle</button></span><br>
+        <span style="margin-left: 104px; color: red;"><button onclick="addTextToTextarea('lower left half of the circle')">lower left half of the circle</button></span><br>
+        <span style="margin-left: 104px; color: red;"><button onclick="addTextToTextarea('lower right half of the circle')">lower right half of the circle</button></span><br>
+        </label>
+        </td>
+        <!--<td><textarea id="tag3" name="tag3" rows="5" cols="40" maxlength="250" required></textarea></td>-->
+        <td><textarea type="text" id="tag6" name="Points_Positions" rows="10" cols="40" maxlength="250" style="height: 200px; width: 300px;" required></textarea></td>
+      </tr>
+    </table>
+    
+    <script>
+        // JavaScript函数，用于将按钮内容添加到<textarea>元素
+        function addTextToTextarea(buttonText) {
+            // 获取<textarea>元素
+            var textareaElement = document.getElementById("tag6");
+    
+            // 将按钮的内容添加到<textarea>元素的值中，以换行符分隔
+            if (textareaElement.value === "") {
+                textareaElement.value = buttonText;
+            } else {
+                textareaElement.value += buttonText;
+            }
+        }
+    </script>
+    
+    
+    <br>
+    <div class="left">
+      <span class="bold" style="color: black;">II.Please fill in information about the <span style="color: red;">lines</span> of the geometric diagram in the text box on the right. If there are multiple items to be filled in, separate them with a semicolon (#) (<span style="color: red;">such as: AB#CD#EF</span>). For the large text box, line breaks are allowed.</span><br>
+    </div>
+    
+    <p><img src="${image_url}" style="max-width: 100%; max-height: 250px" /></p>
+    
+    <table>
+      <tr>
+        <td><label for="tag7">1.Lines/Please list all the lines contained in the geometric diagram:<br>
+        <span style="margin-left: 14px;">((1).If a line includes a third point besides its startpoint and endpoint, specify that this point lies on the line.</span><br>
+        <span style="margin-left: 44px;">For example, if point C is on line AB, then note: Point C is on the line AB. There's no need to mention lines AC and BC.</span><br>
+        <span style="margin-left: 14px;">(2).If there is length information on certain lines in the geometric diagram, please add this information to the annotation.</span><br>
+        <span style="margin-left: 44px;">For example, if the length of line AB is 3cm, annotate it as: <span style="color: red;">AB=3cm</span>).</span>
+    </label></td>
+        <td><textarea type="text" id="tag7" name="Lines_All" rows="20" cols="40" maxlength="250" style="height: 100px; width: 300px;" required></textarea></td>
+      </tr>
+      <tr>
+        <td><label for="tag8">2.Lines/Please list the radii of the circle:</label></td>
+        <td><input type="text" id="tag8" name="Lines_Radii" maxlength="Lines_Radii" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag9">3.Lines/Please list the diameters of the circle:</label></td>
+        <td><input type="text" id="tag9" name="Lines_Diameters" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag10">4.Lines/Please list the lines that are perpendicular to each other. (e.g. AB⊥CD):</label></td>
+        <td><input type="text" id="tag10" name="Lines_Perpendicular" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag11">5.Lines/Please list the lines that are parallel to each other. (e.g. AB∥CD):</label></td>
+        <td><input type="text" id="tag11" name="Lines_Parallel" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag12">6.Lines/Please list the lines that intersect each other:<br>
+        <span style="margin-left: 14px;">(Only mark lines that intersect with different start and end points. For example: <span style="color: red;">Line AB intersects with line CD.</span></span> <br>
+        <span style="margin-left: 14px;">If the intersecting lines have an intersection point, then note that point, like: <span style="color: red;">Line AB intersects with line CD at point E.</span></span><br>
+        <span style="margin-left: 14px;">There's no need to mark lines that have the same starting or ending points, such as line AB and line BC).</span><br>
+        <span style="margin-left: 14px; color: red;">After listing each pair of intersecting lines, please start a new line.</span>
+        </label></td>
+        <td><textarea type="text" id="tag12" name="Lines_Intersection" rows="20" cols="40" maxlength="250" style="height: 100px; width: 300px;" required></textarea></td>
+      </tr>
+    </table>
+    <br>
+    <div class="left">
+      <span class="bold" style="color: black;">III.Please fill in information about the <span style="color: red;">triangles</span> of the geometric diagram in the text box on the right. If there are multiple items to be filled in, separate them with a semicolon (#) (such as: △ABC#△OCD). </span>
+    </div>
+    
+    <p><img src="${image_url}" style="max-width: 100%; max-height: 250px" /></p>
+    
+    <table>
+      <tr>
+        <td><label for="tag13">1.Triangles/Please list all the triangles in the image:<br>
+        <span style="margin-left: 14px;">If there is angle information on certain angles of a triangle in the geometric figure, please add this information to the annotation as follows: </span><br>
+        <span style="margin-left: 14px;">For example, if in △ABC, ∠ACB measures 20° and in △EDF, ∠EFD measures 80°. Annotate it as: △ABC: ∠ACB=20°#△EDF: ∠EFD=80°.</span>
+        </label></td>
+        <td><input type="text" id="tag13" name="Triangles_All" maxlength="250" style="height: 40px; width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag14">2.Triangles/Please list all the right-angled triangles:</label></td>
+        <td><input type="text" id="tag14" name="Triangles_Right_angled" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag15">3.Triangles/Please list all the isosceles triangles:</label></td>
+        <td><input type="text" id="tag15" name="Triangles_Isosceles" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag16">4.Triangles/Please list all the equilateral triangles:</label></td>
+        <td><input type="text" id="tag16" name="Triangles_Equilateral" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+    </table>
+    <br>
+    <div class="left">
+      <span class="bold" style="color: black;">IV.Please fill in information about the <span style="color: red;">quadrilaterals</span> and <span style="color: red;">polygons</span> of the geometric diagram in the text box on the right. If there are multiple items to be filled in, separate them with a semicolon (#) (such as:ABCD#EFGH or ABCDE#FGHIJ)</span>
+    </div>
+    
+    <p><img src="${image_url}" style="max-width: 100%; max-height: 250px" /></p>
+    
+    <table>
+      <tr>
+        <td><label for="tag17">1.Quadrilaterals/Please list all the quadrilaterals in the image:<br>
+        </label></td>
+        <td><input type="text" id="tag17" name="Quadrilaterals" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag18">2.Quadrilaterals/Please list all the parallelograms in the image:<br>
+        </label></td>
+        <td><input type="text" id="tag18" name="Parallelograms" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag19">3.Polygons/Please list all the polygons in the image:<br>
+        </label></td>
+        <td><input type="text" id="tag19" name="Polygons" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+    </table>
+    <br>
+    <div class="left">
+      <span class="bold" style="color: black;">V.Please fill in information about the <span style="color: red;">circles</span> of the geometric diagram in the text box on the right. If there are multiple items to be filled in, separate them with a semicolon (#) (such as: ⊙O#⊙E). </span>
+    </div>
+    
+    <p><img src="${image_url}" style="max-width: 100%; max-height: 250px" /></p>
+    
+    <table>
+      <tr>
+        <td><label for="tag20">1.Circles/Please list all the circles in the image:<br>
+        </label></td>
+        <td><input type="text" id="tag20" name="Circles_All" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+    </table>
+    
+    <table>
+      <tr>
+        <td><label for="tag21">2.Circles/Is it a semicircle?<br>
+        <span style="margin-left: 14px;">Options:</span>
+        <span style="margin-left: 8px; color: red;"><button onclick="selectOption('yes')">yes</button></span>
+        <button id="noButton" onclick="selectOption('no')">no</button>
+        </label></td>
+        <td><input type="text" id="tag21" name="Semicircle" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+    </table>
+    
+    <script>
+      // JavaScript函数，用于选择 "yes" 或 "no" 并将选项显示在文本框中
+      function selectOption(option) {
+        var textareaElement = document.getElementById("tag21");
+        textareaElement.value = option;
+      }
+    </script>
+    
+    <table>
+      <tr>
+        <td><label for="tag22">3.Circles/Is it a quarter of a circle?<br>
+        <span style="margin-left: 14px;">Options:</span>
+        <span style="margin-left: 8px; color: red;"><button onclick="selectOption1('yes')">yes</button></span>
+        <button id="noButton" onclick="selectOption1('no')">no</button>
+        </label></td>
+        <td><input type="text" id="tag22" name="Quarter_of_a_circle" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+    </table>
+    
+    <script>
+      // JavaScript函数，用于选择 "yes" 或 "no" 并将选项显示在文本框中
+      function selectOption1(option) {
+        var textareaElement = document.getElementById("tag22");
+        textareaElement.value = option;
+      }
+    </script>
+    
+    <br>
+    <div class="left">
+      <span class="bold" style="color: black;">VI.Please fill in information about the <span style="color: red;">angles</span> of the geometric diagram in the text box on the right. If there are multiple items to be filled in, separate them with a semicolon (#).</span><br>
+      <span class="bold" style="color: black; margin-left: 14px;">If there is angle information (degree or mark) at certain angles in the geometric diagram (if already annotated in the III.Triangles, no need to annotate here), please add this information to the annotation as follows: </span><br>
+      <!--<span class="bold" style="color: black; margin-left: 14px;">For example, if the angle ∠ACB measures 30° and ∠EDF measures 50°, annotate it as: ∠ACB=30°#∠EDF=50°</span><br>-->
+    </div>
+    
+    <p><img src="${image_url}" style="max-width: 100%; max-height: 250px" /></p>
+    
+    <table>
+      <tr>
+        <td><label for="tag23">1.Angles/Please list the angles in the diagram that have angle degrees along with their degrees：<br>
+        <span style="margin-left: 14px;">For example, if the angle ∠ACB measures 30° and ∠EDF measures 50°, annotate it as: ∠ACB=30°#∠EDF=50°</span>
+        </label></td>
+        <td><input type="text" id="tag23" name="Angles_Degrees" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+      <tr>
+        <td><label for="tag24">2.Angles/Please list the angles in the diagram that have angle mark:<br>
+        <span style="margin-left: 14px;">For example, if ∠ACB is marked as ∠1, and ∠EDF is marked as ∠2, annotate it as: ∠ACB=∠1#∠EDF=∠2</span>
+        </label></td>
+        <td><input type="text" id="tag24" name="Angles_Angle_mark" maxlength="250" style="width: 300px;" required></td>
+      </tr>
+    </table>
+    
+    <br>
+    <div class="left">
+      <span class="bold" style="color: black;">VII.Additional/Regarding this image, do you have any additional information you believe needs to be added?</span><br>
+    </div>
+    <td><span style="margin-left: 24px;"><textarea type="text" id="tag25" name="Additional" rows="20" cols="40" maxlength="250" style="height: 100px; width: 800px;" required></textarea></span></td><br>
+    <br>
+    
+
+    <button type="submit" style="font-size: 15px; padding: 10px 20px; background-color: orange; color: white;">Submit</button>
+</crowd-form>
